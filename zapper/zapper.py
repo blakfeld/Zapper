@@ -76,6 +76,7 @@ class Zapper(object):
         Args:
             src_directory (str):        The path to the artifact.
             entry_point (str):          The entrypoint for the zipapp.
+            python_shebang (str):       The shebang line to use.
             app_name (str):             Override default app name.
             requirements (list):        Requirements for the package.
             requirements_txt (str):     Path to a requirements.txt file.
@@ -87,7 +88,6 @@ class Zapper(object):
         Raises:
             ValueError when unable to resolve 'app_name'.
         """
-
         self.python_shebang = python_shebang or self.default_python_shebang
         self.src_directory = src_directory
         self.dest = dest
@@ -122,7 +122,6 @@ class Zapper(object):
         """
         Destructor
         """
-
         self._clean()
 
     def _debug(self, msg):
@@ -132,22 +131,25 @@ class Zapper(object):
         Args:
             msg (str):          The message to display.
         """
-
         if self.debug:
             print(msg)
 
     def _deduce_app_name(self):
         """
         If an app name is not provided, try and figure one out.
-        """
 
+        Returns:
+            str.
+
+        Raises:
+            ZaperError if we're unable to figure out an app name.
+        """
         # Check and see if we can use the destination as a valid
         #   name.
         use_dest = True
         if file_exists(self.dest) and os.path.isdir(self.dest):
             use_dest = False
         elif file_exists(self.dest) and os.path.isfile(self.dest):
-            # Confirm overwrite
             use_dest = True
 
         if use_dest:
@@ -170,7 +172,6 @@ class Zapper(object):
         """
         Open a file and write a python shebang as the first line.
         """
-
         self._debug('Prepending python shebang "{0}" to "{1}"'
                     .format(self.python_shebang, self.dest_path))
 
@@ -191,10 +192,9 @@ class Zapper(object):
                 sys.exit(entry_point(parameters))
 
         Raises:
-            ValueError if the supplied entry point isn't formatted
+            ZapperError if the supplied entry point isn't formatted
                 as: "module_name:main_function params"
         """
-
         self._debug('Creating __main__.py')
 
         # Attempt to parse any paremeters out of the entry point.
@@ -244,9 +244,9 @@ class Zapper(object):
             a 'vendor' directory.
 
         Raises:
-            OSError if Pip is not installed.
+            ZapperError if Pip is not installed, or if it fails to
+                install any dependencies.
         """
-
         # On windows, pip is 'pip.exe', but everywhere else its pip.
         if os.name == 'posix':
             pip_name = 'pip'
@@ -258,9 +258,9 @@ class Zapper(object):
         if not pip_cmd:
             raise ZapperError('Required program "pip" not installed!')
 
-        # Check if our vendor path exists, and if it doesn't,
-        #   create it. This way if a project already has one,
-        #   I don't step on too many toes.
+        # Check if our vendor path exists, and if it doesn't, create
+        #   it. This way if a project already has one, I don't step
+        #   on too many toes.
         self._debug('Installing Dependencies.')
         if not file_exists(self.vendor_path):
             self._debug('Creating "{0}"'.format(self.vendor_path))
@@ -322,6 +322,9 @@ class Zapper(object):
 
         Args:
             fpath (str):        Filepath or file name
+
+        Returns:
+            bool
         """
 
         for ignore_file in self.ignore:
@@ -354,7 +357,6 @@ class Zapper(object):
         """
         Recursively zip a diorectory.
         """
-
         # Check if we have zlib installed -- which allows us to
         #   compress the resulting zip file. Otherwise just
         #   store it.
@@ -382,7 +384,6 @@ class Zapper(object):
         """
         Clean up after myself.
         """
-
         self._debug('Cleaning up')
 
         # Loop through all files we've created, and attempt
@@ -401,7 +402,6 @@ class Zapper(object):
         """
         Remove all files ending in '.pyc'.
         """
-
         self._debug('Cleaning out ".pyc" files')
 
         # Search for all files that end with the extension '.pyc'
@@ -415,7 +415,6 @@ class Zapper(object):
         """
         Build a zipapp.
         """
-
         # Clean out any pyc's we have.
         if self.clean_pyc:
             self._clean_pyc()

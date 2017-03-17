@@ -34,7 +34,6 @@ def read(fname):
     Args:
         fname (str):        The file to read.
     """
-
     with open(os.path.join(os.path.dirname(__file__), fname), 'r') as f:
         return f.read()
 

@@ -51,7 +51,6 @@ def _parse_args():
     Raises:
         ValueError if 'src' path is invalid.
     """
-
     # Set up our argument parser.
     parser = argparse.ArgumentParser(
         description='A tool to build python zipapps.',
@@ -123,7 +122,6 @@ def _find_build_file(src_path):
     Raises:
         ValueError if we can't find a build file.
     """
-
     # Possible names for the build file. 'build' and 'build.yml'
     #   seemed sensible enough.
     possible_build_file_names = ['build', 'build.yml', 'build.yaml']
@@ -154,7 +152,6 @@ def _read_build_file(build_file_path):
         IOError if the provided build file doesn't exist.
         ValueError if build file does not contain 'zapper' key.
     """
-
     # Check if we're given a file handle. If we are, just read it.
     #   otherwise, do all our normal file operations.
     if isinstance(build_file_path, file):
@@ -186,7 +183,6 @@ def _parse_options_from_cmd_args(args):
     Returns:
         dict of options.
     """
-
     opts = {}
     if args.name is not None:
         opts['app_name'] = args.name
@@ -221,7 +217,6 @@ def _zap(src, dest, opts, verbose):
     Args:
         opts (dict):        Zapper opts
     """
-
     zapper = Zapper(src_directory=src,
                     dest=dest,
                     python_shebang=opts.get('python_shebang'),
@@ -239,7 +234,6 @@ def main():
     """
     Main
     """
-
     # Gather up our arguments and options
     args = _parse_args()
 

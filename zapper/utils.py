@@ -43,7 +43,6 @@ def get_file_path(fname):
     Returns:
         str
     """
-
     return os.path.dirname(os.path.realpath(fname))
 
 
@@ -53,8 +52,10 @@ def file_exists(fpath):
 
     Args:
         fpath (str):        The file path to check.
-    """
 
+    Returns:
+        bool
+    """
     if fpath is None:
         return False
 
@@ -80,7 +81,6 @@ def list_files(path):
     Returns:
         str: files in the path.
     """
-
     for root, folders, files in os.walk(path):
         for filename in folders + files:
             yield os.path.join(root, filename)
@@ -98,12 +98,13 @@ def render_template(template_name, **kwargs):
         **kwargs (dict):     Key Value pairs of any variables we want rendered
                                 out into the template.
 
+    Returns:
+        str
+
     Raises:
         AncillaryFileNotFound:      If we cannot find the template.
         AncillaryUndefinedError:    If we run across an undefined variable.
-
     """
-
     # Attempt to load a Tempalte file from within the 'Zapper' package
     #   and raise an IOError if I'm unable to find it.
     try:
@@ -130,8 +131,10 @@ def file_executable(fpath):
 
     Args:
         fpath (str):        The path to the file in question.
-    """
 
+    Returns:
+        bool
+    """
     return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
 
 
@@ -146,8 +149,10 @@ def which(program):
 
     Args:
         program (str):      The name of the program to search for.
-    """
 
+    Returns:
+        str
+    """
     # If I'm given a fully qualified path, just test that,
     #   otherwise, search the os's PATH environment variable
     program_path, program_name = os.path.split(program)
